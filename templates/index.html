@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Speed Tester</title>
+    <style>
+        /* Basic body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Main container for content */
+        .reading-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Heading styling */
+        .reading-container h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Button styling */
+        .reading-container button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .reading-container button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .reading-container button:hover:enabled {
+            background-color: #0056b3;
+        }
+
+        /* Styling for the result and paragraph display */
+        .reading-container p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .reading-container h2 {
+            color: #007bff;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        /* Hide the reading paragraph initially */
+        #reading-paragraph {
+            display: none;
+            font-size: 16px;
+            margin: 20px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Word count styling */
+        #word-count {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* Timer styling */
+        #timer {
+            font-size: 18px;
+            color: #ff4a4a;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reading-container">
+        <h1>Reading Speed Tester</h1>
+
+        <!-- Buttons for start, stop, quiz, and logout -->
+        <button id="start-btn">Start Reading</button>
+        <button id="stop-btn" disabled>Stop Reading</button>
+        <button id="quiz-btn" disabled>Take Comprehension Quiz</button>
+        <button id="logout-btn">Logout</button>
+
+        <!-- Hidden paragraph to be displayed for reading -->
+        <p id="reading-paragraph"></p>
+
+        <!-- Word count display -->
+        <p>Word count of passage: <strong id="word-count">0</strong></p>
+
+        <!-- Timer display -->
+        <div id="timer">Time: 00:00</div>
+
+        <!-- Results will be displayed here -->
+        <h2 id="result"></h2>
+    </div>
+
+    <script>
+        let startTime, interval;
+
+        // Function to format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Function to start the timer
+        function startTimer() {
+            startTime = Date.now();
+            interval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('timer').innerText = `Time: ${formatTime(elapsedTime)}`;
+            }, 1000);
+        }
+
+        // Function to stop the timer
+        function stopTimer() {
+            clearInterval(interval);
+        }
+
+        document.getElementById('start-btn').addEventListener('click', function () {
+            // Start the timer and eye tracker
+            fetch('/start_timer', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('reading-paragraph').innerText = data.paragraph;
+                    document.getElementById('reading-paragraph').style.display = 'block';
+                    document.getElementById('word-count').innerText = data.word_count;
+                    console.log(data.message);
+                    document.getElementById('start-btn').disabled = true;
+                    document.getElementById('stop-btn').disabled = false;
+                    document.getElementById('quiz-btn').disabled = false;
+                    startTimer(); // Start the timer when reading starts
+                });
+        });
+
+        document.getElementById('stop-btn').addEventListener('click', function () {
+            stopTimer(); // Stop the timer when the stop button is clicked
+
+            const wordCount = parseInt(document.getElementById('word-count').innerText); 
+            fetch('/stop_timer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word_count: wordCount })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = `
+                    <p>Your base reading speed is ${data.base_reading_speed.toFixed(2)} words per minute.</p>
+                    <p>Eye movements detected: ${data.eye_movement_count}.</p>
+                    <p>Your adjusted reading speed is ${data.adjusted_speed.toFixed(2)} words per minute.</p>
+                `;
+                document.getElementById('start-btn').disabled = false;
+                document.getElementById('stop-btn').disabled = true;
+            });
+        });
+
+        document.getElementById('quiz-btn').addEventListener('click', function () {
+            window.location.href = '/quiz'; 
+        });
+
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', function () {
+            window.location.href = '/logout';
+        });
+    </script>
+</body>
+</html>

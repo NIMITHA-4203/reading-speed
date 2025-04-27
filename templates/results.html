@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Basic body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Main container for content */
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Heading styling */
+        .container h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .container p {
+            font-size: 16px;
+            color: #555;
+            margin: 10px 0; /* Add some margin for spacing */
+        }
+
+        /* Button styling */
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Remove underline for link */
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Readind Speed and Comprehension Results</h1>
+        
+        <p><strong>Reading Speed:</strong> {{ '%.2f' | format(reading_speed) }} WPM</p>
+        <p><strong>Adjusted Reading Speed:</strong> {{  '%.2f' | format(adjusted_reading_speed) }} WPM</p>
+        <p><strong>Total Score:</strong> {{  '%.2f' | format(total_score) }}/3</p>
+        <p><strong>Sentence Match Percentage:</strong> {{  '%.2f' | format(match_percentage) }}%</p>
+        <!-- <p><strong>Your Input Sentence:</strong> {{ user_sentence }}</p> -->
+        <p><strong>Comprehension Result:</strong> {{  '%.2f' | format(comprehension_result) }}%</p>
+        <br></br>
+        <a href="{{ url_for('index') }}" class="btn">Go to Home</a>
+    </div>
+</body>
+</html>

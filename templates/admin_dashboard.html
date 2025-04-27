@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        /* Header styling */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #333;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background-color: #d9534f;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .logout-btn:hover {
+            background-color: #c9302c;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:hover {
+            background-color: #ddd;
+        }
+
+        /* Nested table styling */
+        .quiz-results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .quiz-results-table th, .quiz-results-table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .quiz-results-table th {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .no-results {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with logout button -->
+    <div class="header">
+        <h1>Admin Dashboard</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+
+    <!-- User data table -->
+    <table>
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>State</th>
+                <th>Age</th>
+                <th>Quiz Results</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user['user_id'] }}</td>
+                <td>{{ user['name'] }}</td>
+                <td>{{ user['state'] }}</td>
+                <td>{{ user['age'] }}</td>
+                <td>
+                    {% if 'quiz_results' in user %}
+                    <table class="quiz-results-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Title Answer</th>
+                                <th>Category Answer</th>
+                                <th>Match Percentage</th>
+                                <th>Score</th>
+                                <th>Reading Speed</th>
+                                <th>Adjusted Reading Speed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in user['quiz_results'] %}
+                            <tr>
+                                <td>{{ result['date'].strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                                <td>{{ result['title_answer'] }}</td>
+                                <td>{{ result['category_answer'] }}</td>
+                                <td>{{ result['match_percentage'] }}%</td>
+                                <td>{{ result['score'] }}</td>
+                                <td>{{ result['reading_speed'] }}</td>
+                                <td>{{ result['adjusted_reading_speed'] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="no-results">No quiz results found.</div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

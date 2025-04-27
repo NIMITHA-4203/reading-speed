@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehension Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base body styling */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f9f9fb;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Container for the quiz */
+        .quiz-container {
+            background-color: #ffffff;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Header styles */
+        .quiz-container h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .quiz-container h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #0062cc;
+            margin-bottom: 10px;
+        }
+
+        .quiz-container p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .quiz-container h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* Question styling */
+        .question {
+            text-align: left;
+            margin: 25px 0;
+        }
+
+        .question label {
+            margin-left: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Radio button styling */
+        input[type="radio"] {
+            margin-right: 10px; /* Space between radio button and label */
+        }
+
+        /* Textarea styling */
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            font-family: 'Open Sans', sans-serif;
+            resize: none; /* Disable resizing */
+            margin-top: 8px;
+        }
+
+        /* Submit button styling */
+        input[type="submit"] {
+            padding: 12px 25px;
+            background-color: #0062cc;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 25px;
+            box-shadow: 0px 4px 8px rgba(0, 98, 204, 0.2);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #004a99;
+        }
+
+        /* Result section styling */
+        #quiz-result {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #0062cc;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .quiz-container {
+                padding: 30px;
+            }
+
+            input[type="submit"] {
+                width: 100%;
+            }
+
+            .quiz-container h1 {
+                font-size: 22px;
+            }
+
+            .quiz-container h2 {
+                font-size: 18px;
+            }
+
+            .question label {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Comprehension Quiz</h1>
+        <!-- <h2>Title: {{ title }}</h2>
+        <p>Word Count: {{ word_count }}</p>
+        <p>{{ paragraph }}</p> -->
+
+        <h3>Questions:</h3>
+        <form id="quiz-form" method="POST">
+            <!-- Question 1: Title -->
+            <div class="question">
+                <label for="question1">1. What is the title of the paragraph?</label><br>
+                {% for option in title_options %}
+                    <input type="radio" id="title_{{ loop.index }}" name="question1" value="{{ option }}">
+                    <label for="title_{{ loop.index }}">{{ option }}</label><br>
+                {% endfor %}
+            </div>
+
+            <!-- Question 2: Category -->
+            <div class="question">
+                <label for="question2">2. What is the category of the paragraph?</label><br>
+                {% for option in category_options %}
+                    <input type="radio" id="category_{{ loop.index }}" name="question2" value="{{ option }}">
+                    <label for="category_{{ loop.index }}">{{ option }}</label><br>
+                {% endfor %}
+            </div>
+
+            <!-- Question 3: Sentence -->
+            <div class="question">
+                <label for="question3">3. Enter a sentence about the paragraph:</label><br>
+                <textarea id="question3" name="question3" required></textarea>
+            </div>
+
+            <input type="submit" value="Submit Quiz">
+        </form>
+
+        <h2 id="quiz-result"></h2>
+
+        {% if total_score is not none %}
+            <h2>Your Results</h2>
+            <p>Total Score: {{ "%.2f"|format(total_score) }} out of 3.00</p>
+            <p>Your sentence matches the passage by {{ "%.2f"|format(match_percentage) }}%.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
